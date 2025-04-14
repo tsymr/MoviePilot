@@ -21,6 +21,10 @@ class Discover(TMDb):
         :return:
         """
         params = dict(params_tuple)
+        # 添加默认分级为NC-17（如果用户没有指定分级）
+        if 'certification' not in params and 'certification.gte' not in params and 'certification.lte' not in params:
+            params['certification_country'] = 'US'
+            params['certification'] = 'NC-17'
         return self._request_obj(self._urls["movies"], urlencode(params), key="results", call_cached=False)
 
     @cached(maxsize=1, ttl=43200)
@@ -31,4 +35,9 @@ class Discover(TMDb):
         :param params_tuple: dict
         :return:
         """
-        return self._request_obj(self._urls["tv"], urlencode(params_tuple), key="results", call_cached=False)
+        params = dict(params_tuple)
+        # 添加默认分级为TV-MA（如果用户没有指定分级）
+        if 'certification' not in params and 'certification.gte' not in params and 'certification.lte' not in params:
+            params['certification_country'] = 'US'
+            params['certification'] = 'TV-MA'
+        return self._request_obj(self._urls["tv"], urlencode(params), key="results", call_cached=False)
